@@ -1,12 +1,12 @@
 <template>
   <div>
-    <h3>Add Results</h3>
+    <h3>Add Attendance</h3>
     <div class="card results__add-result">
       <div>
          <i class="material-icons prefix">person
         <input
           @keypress="search1()"
-          v-model="addResultData.reg_id"
+          v-model="addAttendanceData.reg_id"
           class="validate"
           placeholder="Registraion No"
           id="reg_no"
@@ -16,7 +16,7 @@
       <div>
         <i class=" material-icons prefix">rate_review
         <input
-          v-model="addResultData.sub_id"
+          v-model="addAttendanceData.sub_id"
           class="validate"
           placeholder="Subject ID"
           id="sub_id"
@@ -25,10 +25,10 @@
       <div>
         <i class="material-icons prefix">rate_review
         <input
-          v-model="addResultData.grade"
+          v-model="addAttendanceData.attendance_percentage"
           class="validate"
-          placeholder="Grade"
-          id="grade"
+          placeholder="Attendance Percentage"
+          id="attendance_percentage"
         ></i>
       </div>
       <!-- <div></div> -->
@@ -41,16 +41,16 @@
         </i>
       </div>
     </div>
-    <h1>Results</h1>
+    <h1>Attendance</h1>
 
-    <div v-for="result in results" v-bind:key="result.reg_id" class="collection">
+    <div v-for="element in attendance" v-bind:key="element.reg_id" class="collection">
     <div class="collection-item results__list-item">
-      <div >{{result.reg_id}}</div>
-      <div >{{result.sub_id}}</div>
-      <div >{{result.grade}}</div>
+      <div >{{element.reg_id}}</div>
+      <div >{{element.sub_id}}</div>
+      <div >{{element.attendance_percentage}}</div>
       <div>
         <i
-          @click="onDelete(result.sub_id,result.reg_id)"
+          @click="onDelete(element.sub_id,element.reg_id)"
           class="material-icons"
         >
           delete
@@ -69,11 +69,11 @@ export default {
   name: 'HelloWorld',
   data () {
     return {
-      results: [],
-      addResultData:{
+      attendance: [],
+      addAttendanceData:{
         reg_id:'',
         sub_id:'',
-        grade:''
+        attendance_percentage:''
       }
     }
   },
@@ -82,42 +82,42 @@ export default {
   },
   created(){
 
-    this.getResults()
+    this.getAttendance()
     // this.clear()
   },
   methods:{
-    getResults(){
-      db.collection('results').get().then(querySnapshot =>{
-      const results=[]
+    getAttendance(){
+      db.collection('attendance').get().then(querySnapshot =>{
+      const attendance=[]
       querySnapshot.forEach(doc=>{
         // console.log(doc.data())
-        results.push(doc.data())
+        attendance.push(doc.data())
       })
-      this.results=results
+      this.attendance=attendance
     } )
 
     },
     onAdd(){
 
-      db.collection('results').doc(this.addResultData.reg_id).set(this.addResultData
-      ).then(this.getResults())
+      db.collection('attendance').doc(this.addAttendanceData.reg_id).set(this.addAttendanceData
+      ).then(this.getAttendance())
 
     },
     onDelete(sub_id,reg_id){
-      db.collection('results')
+      db.collection('attendance')
         .where('reg_id','==',reg_id)
         .where('sub_id','==',sub_id)
         .get()
         .then(querySnapshot =>{
           querySnapshot.forEach(doc=>{
-            doc.ref.delete().then(this.getResults)
+            doc.ref.delete().then(this.getAttendance)
           })
         })
     },
     clear(){
        $("#reg_no").val('');
        $("#sub_id").val('');
-       $("#grade").val('')
+       $("#attendance_percentage").val('')
     },
     search1(){
       // console.log(reg_no);
